@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 import '../styles/tasklist.scss'
 
@@ -16,14 +16,35 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    
+    if (!newTaskTitle) return; // newTaskTitle possui o titulo escrito no imput essa linha não permite criar caso o título seja vazio.
+    
+    const newTask ={
+      id: Math.random(),
+      title: newTaskTitle,
+      isComplete: false
+    }
+
+    setTasks(oldTasks => [...oldTasks, newTask]);
+    setNewTaskTitle(''); // faz com que o imput zere 
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const completeTask = tasks.map(task => task.id == id ? {
+      ...task,
+      isComplete: !task.isComplete,
+    } : task);
+
+    setTasks(completeTask)
+    
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    // o código vai filtrar as tasks diferente do id que vai ser deletado e retorna eles para o arrey
+    const filteredTasks = tasks.filter(tasks => tasks.id != id);
+    setTasks(filteredTasks);
   }
 
   return (
@@ -48,7 +69,7 @@ export function TaskList() {
         <ul>
           {tasks.map(task => (
             <li key={task.id}>
-              <div className={task.isComplete ? 'completed' : ''} data-testid="task" >
+              <div className={task.isComplete ? 'completed' : ''} data-testid="task" id='item'>
                 <label className="checkbox-container">
                   <input 
                     type="checkbox"
